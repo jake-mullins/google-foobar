@@ -18,4 +18,4 @@ def solution(data, n):
 
     return result
 
-# absolutely a way you can do this in one line, but this is pretty readable and dictionarys are the best structure
+# absolutely a way you can do this in one line, but this is pretty readable and dictionaries are the best structure
