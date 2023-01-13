@@ -1,43 +1,38 @@
 def solution(src, dest):
-    return solution2(src // 8, src % 8, dest // 8, dest % 8, 0)
+    return BFS(src // 8, src % 8, dest // 8, dest % 8)
 
-def solution2(src_x, src_y, dest_x, dest_y, count):
+class Square:
+    def __init__(self, x, y, dist=0):
+        self.dist = dist
+        self.x = x
+        self.y = y
+
+def BFS(src_x, src_y, dest_x, dest_y):
     offsets = [(2, 1), (2, -1), (-2, 1), (-2, -1), (1, 2), (1, -2), (-1, 2), (-1, -2)]
 
-    Q = list()
+    visited_squares = set()
 
-    explored = dict()
-    explored[(src_x, src_y)] = 0
+    q = list()
+    # root node
+    q.append(Square(src_x, src_y))
 
-    count = 1
+    dest = Square(dest_x, dest_y)
 
-    v = (src_x, src_y)
-    Q.append(v)
+    while len(q) != 0:
+        square = q.pop(0)
 
-    while len(Q) != 0:
-        u = Q.pop(0)
-        print(u)
+        dist = square.dist
 
-        if u[0] == dest_x and u[1] == dest_y:
-            print("final:", Q, count)
-            return count
-        
-        for offset in offsets:
-            potential_coord = (src_x + offset[0], src_y + offset[1])
-            if potential_coord[0] > 0 and potential_coord[0] < 63 and potential_coord[1] > 0 and potential_coord[1] < 63:
-                if potential_coord not in explored:
-                    v = potential_coord
-                    Q.append(v)
-                    explored[potential_coord] = count
+        if square.x == dest.x and square.y == dest.y:
+            return dist
 
-        count += 1
-# class Node:
-#     def __init__(self, x, y, dist=0):
-#         self.x = x
-#         self.y = y
-#         self.dist = dist
-#         explored = False
-
-offset = [(2, 1), (2, -1), (-2, 1), (-2, -1), (1, 2), (1, -2), (-1, 2), (-1, -2)]
-
-solution(28, 13)
+        if square not in visited_squares:
+            # mark as visited
+            visited_squares.add(square)
+            for offset in offsets:
+                potential = (square.x + offset[0], square.y + offset[1])
+                # if in valid bounds
+                if (potential[0] >= 0 and potential[0] < 8 and potential[1] >= 0 and potential[1] < 8):
+                    q.append(Square(potential[0], potential[1], dist + 1))
+    # according to "knight's tour" problem, 64 is unachievable for shortest path
+    return 64
